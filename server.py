@@ -2,19 +2,16 @@ from flask import Flask, jsonify, render_template, make_response, send_from_dire
 from flask import request
 import os
 import re
+from utils import read_password, allowed_file
 from werkzeug.utils import secure_filename
 import mimetypes
 
 app = Flask(__name__, template_folder='template')
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 UPLOAD_FOLDER = os.path.join(os.getcwd(), "upload")
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-# DOMAIN = "www.dowob.cn/image"
-DOMAIN = "127.0.0.1:8989/image"
 
+password = read_password()
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
 @app.route('/', methods=["GET"])
@@ -30,7 +27,7 @@ def upload_image():
     name = form['name']
     data = request.files
     file = data['uploadFile']
-    if key != 'shaoshuai':
+    if key != password:
         return jsonify({'state': 1})
     if file:
         if name and re.match(r'^([a-zA-Z][a-zA-Z0-9_]*)$', name):
