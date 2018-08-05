@@ -78,3 +78,7 @@ server {
 ```bash
 nginx -s reload
 ```
+# Todo
+-[] 增加拖拽上传
+-[] 移动端适配
+-[] 图片限制大小
