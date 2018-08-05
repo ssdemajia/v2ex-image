@@ -33,8 +33,11 @@ def upload_image():
     if key != 'shaoshuai':
         return jsonify({'state': 1})
     if file:
-        if name and re.match(r'^([a-zA-Z][a-zA-Z0-9]*)$', name):
-            filename = name
+        if name and re.match(r'^([a-zA-Z][a-zA-Z0-9_]*)$', name):
+            if name.rfind('.') != -1:
+                filename = name
+            else:
+                filename = name.rsplit('.', 1)[0] + '.' + file.filename.rsplit('.', 1)[1]
         elif allowed_file(file.filename):
             filename = file.filename
         else:
@@ -44,7 +47,7 @@ def upload_image():
         file.save(os.path.join(UPLOAD_FOLDER, filename))
         return jsonify({
             'state': 0,
-            'url': DOMAIN + "/" + filename
+            'url': request.url.rsplit('/', 1)[0] + '/image/' + filename
         })
     return jsonify({'state': 3})
 
